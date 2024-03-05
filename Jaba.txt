@@ -1,0 +1,86 @@
+package Java;
+
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * клас jaba реалізує інтерфейси studentmanagement та grademanagement
+ * цей клас керує списком студентів та їхніми оцінками
+ */
+public class Jaba implements StudentManagement, GradeManagement {
+    private List<Student> students = new ArrayList<>();
+
+    /**
+     * внутрішній клас student представляє студента
+     * у кожного студента є ім'я та список оцінок
+     */
+    public class Student {
+        private String name;
+        private List<Grade> grades = new ArrayList<>();
+
+        public Student(String name) {
+            this.name = name;
+        }
+            //внутрішній клас grade представляє оцінку студента з певного предмету
+        public class Grade {
+            private String subject;
+            private int grade;
+
+            public Grade(String subject, int grade) {
+                this.subject = subject;
+                this.grade = grade;
+            }
+        }
+    }
+
+    @Override
+    public void addStudent(String name) {
+        students.add(new Student(name));
+    }
+
+    @Override
+    public void removeStudent(String name) {
+        students.removeIf(student -> student.name.equals(name));
+    }
+
+    @Override
+    public void addGrade(String studentName, String subject, int grade) {
+        for (Student student : students) {
+            if (student.name.equals(studentName)) {
+                student.grades.add(student.new Grade(subject, grade));
+            }
+        }
+    }
+
+    @Override
+    public void displayStudentInfo(String name) {
+        for (Student student : students) {
+            if (student.name.equals(name)) {
+                System.out.println("студент: " + student.name);
+                for (Student.Grade grade : student.grades) {
+                    System.out.println("предмет: " + grade.subject + ", : " + grade.grade);
+                }
+            }
+        }
+    }
+    public static void main(String[] args) {
+        Jaba jaba = new Jaba();
+        jaba.addStudent("Марян");
+        jaba.addGrade("Марян", "math", 2);
+        jaba.displayStudentInfo("Марян");
+    }
+}
+
+    //інтерфейс studentmanagement визначає методи для управління студентами
+interface StudentManagement {
+    void addStudent(String name);
+    void removeStudent(String name);
+}
+
+
+    //інтерфейс grademanagement визначає методи для управління оцінками студентів
+
+interface GradeManagement {
+    void addGrade(String studentName, String subject, int grade);
+    void displayStudentInfo(String name);
+}
